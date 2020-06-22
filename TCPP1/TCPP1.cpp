@@ -5,7 +5,7 @@
 #define N 3
 using namespace std;
 int main() {
-	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N];
+	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file("output.txt");
 	int grades[N], mins, maxs, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir,ini;
 	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0);
 	float avg,perp, rat;
@@ -16,9 +16,9 @@ int main() {
 	cin >> maxs;
 	int ming(maxs);
 	if (mins < 0) {
-		cout << "The minimum number is a negative number" << endl;
+		cout << "The minimum grade is a negative number";
 		if (maxs < 0) {
-			cout << " and the maximum number is a negative number." << endl;
+			cout << " and the maximum grade is a negative number." << endl;
 			goto init;
 		}
 		else {
@@ -27,7 +27,15 @@ int main() {
 		}
 	}
 	if (maxs < 0) {
-		cout << "The maximum number is a negative number." << endl;
+		cout << "The maximum grade is a negative number." << endl;
+		goto init;
+	}
+	if (mins > maxs) {
+		cout << "The minimum grade is greater than the maximum grade." << endl;
+		goto init;
+	}
+	if (mins == maxs) {
+		cout << "The minimum grade is equal to the maximum grade." << endl;
 		goto init;
 	}
 	input:
@@ -289,13 +297,35 @@ int main() {
 				if (op == 5) {
 					cout << endl;
 					ofstream output;
-					output.open("output.txt");
-					output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
-					for (i = 0; i < N; i++)
-						output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
-					output.close();
-					cout << endl;
-					goto menu;
+					if (file=="output.txt") {
+						output.open(file);
+						output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
+						for (i = 0; i < N; i++)
+							output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
+						output.close();
+						cout << "The file was saved as 'output.txt'.";
+						cout << endl;
+						file = "output0.txt";
+						goto menu;
+					}
+					else {	
+						cout << "The file already exixts. The file will be saved as '";
+						for (i = 0; i < 100; i++) {
+							if (file.at(6) = i) {
+								file ="output" + to_string(i+1) + ".txt";
+								break;
+							}
+						}
+						cout << file << "'." << endl;
+						output.open(file);
+						file = "output" + to_string(i + 2) + ".txt";
+						output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
+						for (i = 0; i < N; i++)
+							output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
+						output.close();
+						cout << endl;
+						goto menu;
+					}
 				}
 				else
 					if (op == 6) {
