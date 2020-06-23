@@ -2,13 +2,33 @@
 #include<fstream>
 #include<iomanip>
 #include<string>
+#include<thread>
+#include<chrono>
 #define N 3
 using namespace std;
 int main() {
-	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file("output.txt");
-	int grades[N], mins, maxs, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir,ini;
+	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file("output.txt"), bar;
+	int grades[N], mins, maxs, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250);
 	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0);
 	float avg,perp, rat;
+	welcome:
+	for (i = 0; i < 25; i++) {
+		bar += "#";
+		t -= 10;
+		cout << "\n\n\n";
+		cout << "\t\t*****************************" << endl;
+		cout << "\t\t*  Welcome to TCPP1(Beta)!  *" << endl;
+		cout << "\t\t  " << bar << "  " << endl;
+		cout << "\t\t*****************************" << endl;
+		this_thread::sleep_for(chrono::milliseconds(t));
+		system("cls");
+	}
+	cout << "\n\n\n";
+	cout << "\t\t*****************************" << endl;
+	cout << "\t\t*  Welcome to TCPP1(Beta)!  *" << endl;
+	cout << "\t\t* Press any key to continue *" << endl;
+	cout << "\t\t*****************************" << endl;
+	cin.get();
 	init:
 	cout << "Input the minimum grade: ";
 	cin >> mins;
@@ -312,13 +332,13 @@ int main() {
 						cout << "The file already exixts. The file will be saved as '";
 						for (i = 0; i < 100; i++) {
 							if (file.at(6) = i) {
-								file ="output" + to_string(i+1) + ".txt";
+								file ="output" + to_string(i) + ".txt";
 								break;
 							}
 						}
 						cout << file << "'." << endl;
 						output.open(file);
-						file = "output" + to_string(i + 2) + ".txt";
+						file = "output" + to_string(i + 1) + ".txt";
 						output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
 						for (i = 0; i < N; i++)
 							output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
