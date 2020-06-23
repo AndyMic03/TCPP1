@@ -4,6 +4,7 @@
 #include<string>
 #include<thread>
 #include<chrono>
+#include <conio.h>
 #define N 3
 using namespace std;
 int main() {
@@ -28,7 +29,7 @@ int main() {
 	cout << "\t\t*  Welcome to TCPP1(Beta)!  *" << endl;
 	cout << "\t\t* Press any key to continue *" << endl;
 	cout << "\t\t*****************************" << endl;
-	cin.get();
+	_getch();
 	init:
 	cout << "Input the minimum grade: ";
 	cin >> mins;
@@ -401,8 +402,25 @@ int main() {
 								goto menu;
 							}
 							else
-								if (op == 9)
+								if (op == 9) {
+									bar = "";
+									for (i = 0; i < 7; i++) {
+										t -= 10;
+										cout << "\n\n\n";
+										cout << "\t\t*************" << endl;
+										cout << "\t\t  " << bar << "  " << endl;
+										cout << "\t\t*************" << endl;
+										bar += "#";
+										this_thread::sleep_for(chrono::milliseconds(250));
+										system("cls");
+									}
+									cout << "\n\n\n";
+									cout << "\t\t*************" << endl;
+									cout << "\t\t*  Goodbye  *" << endl;
+									cout << "\t\t*************" << endl;
+									this_thread::sleep_for(chrono::milliseconds(1000));
 									return 0;
+								}
 								else {
 									cout << endl;
 									cout << "ERROR" << endl;
