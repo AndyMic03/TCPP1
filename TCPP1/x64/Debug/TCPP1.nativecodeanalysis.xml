@@ -1,2 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<DEFECTS></DEFECTS>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\ateas\Desktop\School\cpp\TCPP1\TCPP1\</FILEPATH>
+      <FILENAME>TCPP1.cpp</FILENAME>
+      <LINE>33</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6031</DEFECTCODE>
+    <DESCRIPTION>Return value ignored: '_getch'.</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>10</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

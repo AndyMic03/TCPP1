@@ -8,7 +8,7 @@
 #define N 3
 using namespace std;
 int main() {
-	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file("output.txt"), bar;
+	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file, bar, flnm;
 	int grades[N], mins, maxs, ming, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250);
 	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0);
 	float avg,perp, rat;
@@ -33,11 +33,13 @@ int main() {
 	cout << "\t\t*****************************" << endl;
 	cout << endl;
 	_getch();
+	bar = "";
 	cout << "\t\t     Would you like to:" << endl;
 	cout << "\t\t  1.Input new student data" << endl;
 	cout << "\t\t2.Open existing student data" << endl;
-	cout << ">";
+	cout << "\t\t>";
 	cin >> op;
+	cout << endl;
 	if (op == 1)
 		goto ninput;
 	else
@@ -49,7 +51,11 @@ int main() {
 			goto welcome;
 		}
 	open:
-	studentin.open("student.txt");
+	cout << "Which class would you like to open?" << endl;
+	cout << ">";
+	cin >> flnm;
+	file = flnm + ".txt";
+	studentin.open(file);
 	for (i = 0; i < N; i++)
 		getline(studentin, names[i]);
 	studentin.close();
@@ -73,11 +79,15 @@ int main() {
 	cout << ">";
 	cin >> re;
 	if (re == "yes") {
-		studentout.open("student.txt");
+		cout << "Which class did you input?" << endl;
+		cout << ">";
+		cin >> flnm;
+		file = flnm + ".txt";
+		studentout.open(file);
 		for (i = 0; i < N; i++)
 			studentout << names[i] << endl;
 		studentout.close();
-		cout << "The file was saved as 'student.txt'.";
+		cout << "The file was saved as '"<<file<<"'.";
 		cout << endl;
 		goto init;
 	}
@@ -364,35 +374,18 @@ int main() {
 			else
 				if (op == 5) {
 					cout << endl;
-					if (file=="output.txt") {
-						output.open(file);
-						output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
-						for (i = 0; i < N; i++)
-							output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
-						output.close();
-						cout << "The file was saved as 'output.txt'.";
-						cout << endl;
-						file = "output0.txt";
-						goto menu;
-					}
-					else {	
-						cout << "The file already exixts. The file will be saved as '";
-						for (i = 0; i < 100; i++) {
-							if (file.at(6) = i) {
-								file ="output" + to_string(i) + ".txt";
-								break;
-							}
-						}
-						cout << file << "'." << endl;
-						output.open(file);
-						file = "output" + to_string(i + 1) + ".txt";
-						output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
-						for (i = 0; i < N; i++)
-							output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
-						output.close();
-						cout << endl;
-						goto menu;
-					}
+					cout << "How would you like to save that?" << endl;
+					cout << ">";
+					cin >> flnm;
+					file = flnm + ".txt";
+					output.open(file);
+					output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
+					for (i = 0; i < N; i++)
+						output << '\t' << setw(maxw) << names[i] << '\t' << "|" << '\t' << grades[i] << endl;
+					output.close();
+					cout << "The file was saved as '"<<file<<"'.";
+					cout << endl;
+					goto menu;
 				}
 				else
 					if (op == 6) {
