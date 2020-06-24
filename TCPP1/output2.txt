@@ -1,4 +1,0 @@
-	Name	|	Grade
-	R	|	30
-	G	|	60
-	K	|	30

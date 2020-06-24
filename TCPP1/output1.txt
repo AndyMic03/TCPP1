@@ -1,4 +1,0 @@
-	Name	|	Grade
-	A	|	50
-	B	|	40
-	C	|	30
