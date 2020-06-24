@@ -9,9 +9,11 @@
 using namespace std;
 int main() {
 	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file("output.txt"), bar;
-	int grades[N], mins, maxs, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250);
+	int grades[N], mins, maxs, ming, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250);
 	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0);
 	float avg,perp, rat;
+	ifstream studentin;
+	ofstream output, studentout;
 	welcome:
 	for (i = 0; i < 25; i++) {
 		bar += "#";
@@ -29,13 +31,70 @@ int main() {
 	cout << "\t\t*  Welcome to TCPP1(Beta)!  *" << endl;
 	cout << "\t\t* Press any key to continue *" << endl;
 	cout << "\t\t*****************************" << endl;
+	cout << endl;
 	_getch();
+	cout << "\t\t     Would you like to:" << endl;
+	cout << "\t\t  1.Input new student data" << endl;
+	cout << "\t\t2.Open existing student data" << endl;
+	cout << ">";
+	cin >> op;
+	if (op == 1)
+		goto ninput;
+	else
+		if (op == 2)
+			goto open;
+		else {
+			system("cls");
+			cout << "ERROR. Quitting...";
+			goto welcome;
+		}
+	open:
+	studentin.open("student.txt");
+	for (i = 0; i < N; i++)
+		getline(studentin, names[i]);
+	studentin.close();
+	goto init;
+	ninput:
+	for (i = 0; i < N; i++) {
+		if ((i % 10) == 0)
+			suf = "st";
+		else
+			if ((i % 10) == 1)
+				suf = "nd";
+			else
+				if ((i % 10) == 2)
+					suf = "rd";
+				else
+					suf = "th";
+		cout << "Input the " << i + 1 << suf << " name: ";
+		cin >> names[i];
+	}
+	cout << "Would you like to save the student list? (yes/no)" << endl;
+	cout << ">";
+	cin >> re;
+	if (re == "yes") {
+		studentout.open("student.txt");
+		for (i = 0; i < N; i++)
+			studentout << names[i] << endl;
+		studentout.close();
+		cout << "The file was saved as 'student.txt'.";
+		cout << endl;
+		goto init;
+	}
+	else
+		if (re == "no")
+			goto init;
+		else {
+			system("cls");
+			cout << "ERROR. Quitting...";
+			goto ninput;
+		}
 	init:
 	cout << "Input the minimum grade: ";
 	cin >> mins;
 	cout << "Input the maximum grade: ";
 	cin >> maxs;
-	int ming(maxs);
+	ming = maxs;
 	if (mins < 0) {
 		cout << "The minimum grade is a negative number";
 		if (maxs < 0) {
@@ -59,20 +118,8 @@ int main() {
 		cout << "The minimum grade is equal to the maximum grade." << endl;
 		goto init;
 	}
-	input:
+	ginput:
 	for (i = 0; i < N; i++) {
-		if ((i % 10) == 0)
-			suf = "st";
-		else
-			if ((i % 10) == 1)
-				suf = "nd";
-			else
-				if ((i % 10) == 2)
-					suf = "rd";
-				else
-					suf = "th";
-		cout << "Input the " << i + 1 << suf << " name: ";
-		cin >> names[i];
 		if (names[i].back() == 's')
 			nsuf = names[i] + "'";
 		else
@@ -103,7 +150,7 @@ int main() {
 		cout << ">";
 		cin >> re;
 		if (re == "yes")
-			goto input;
+			goto ginput;
 		else
 			if (re == "no")
 				goto menu;
@@ -317,7 +364,6 @@ int main() {
 			else
 				if (op == 5) {
 					cout << endl;
-					ofstream output;
 					if (file=="output.txt") {
 						output.open(file);
 						output << '\t' << setw(maxw) << "Name" << '\t' << "|" << '\t' << "Grade" << endl;
@@ -354,7 +400,7 @@ int main() {
 						cout << ">";
 						cin >> re;
 						if (re == "yes")
-							goto input;
+							goto ginput;
 						else
 							if (re == "no")
 								goto menu;
