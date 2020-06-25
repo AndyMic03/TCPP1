@@ -12,8 +12,8 @@ int main() {
 	int grades[N], mins, maxs, ming, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250);
 	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0);
 	float avg,perp, rat;
-	ifstream studentin;
-	ofstream output, studentout;
+	ifstream studentin, initin;
+	ofstream output, studentout, initout;
 	welcome:
 	for (i = 0; i < 25; i++) {
 		bar += "#";
@@ -34,6 +34,80 @@ int main() {
 	cout << endl;
 	_getch();
 	bar = "";
+	iprompt:
+	cout << "\t             Would you like to:" << endl;
+	cout << "\t       1.Input new initialization data" << endl;
+	cout << "\t     2.Open existing initialization data" << endl;
+	cout << "\t     >";
+	cin >> op;
+	cout << endl;
+	if (op == 1)
+		goto iinput;
+	else
+		if (op == 2)
+			goto iopen;
+		else {
+			system("cls");
+			cout << "ERROR. Quitting...";
+			goto welcome;
+		}
+	iopen:
+	initin.open("init.txt");
+	initin >> mins;
+	initin >> maxs;
+	initin.close();
+	ming = maxs;
+	goto nprompt;
+	iinput:
+	cout << "Input the minimum grade: ";
+	cin >> mins;
+	cout << "Input the maximum grade: ";
+	cin >> maxs;
+	ming = maxs;
+	if (mins < 0) {
+		cout << "The minimum grade is a negative number";
+		if (maxs < 0) {
+			cout << " and the maximum grade is a negative number." << endl;
+			goto iinput;
+		}
+		else {
+			cout << "." << endl;
+			goto iinput;
+		}
+	}
+	if (maxs < 0) {
+		cout << "The maximum grade is a negative number." << endl;
+		goto iinput;
+	}
+	if (mins > maxs) {
+		cout << "The minimum grade is greater than the maximum grade." << endl;
+		goto iinput;
+	}
+	if (mins == maxs) {
+		cout << "The minimum grade is equal to the maximum grade." << endl;
+		goto iinput;
+	}
+	cout << "Would you like to save the initialization? (yes/no)" << endl;
+	cout << ">";
+	cin >> re;
+	if (re == "yes") {
+		initout.open("init.txt");
+		initout << mins << endl;
+		initout << maxs << endl;
+		studentout.close();
+		cout << "The file was saved as 'init.txt'."<<endl;
+		cout << endl;
+		goto nprompt;
+	}
+	else
+		if (re == "no")
+			goto iinput;
+		else {
+			system("cls");
+			cout << "ERROR. Quitting...";
+			goto iinput;
+		}
+	nprompt:
 	cout << "\t\t     Would you like to:" << endl;
 	cout << "\t\t  1.Input new student data" << endl;
 	cout << "\t\t2.Open existing student data" << endl;
@@ -44,13 +118,13 @@ int main() {
 		goto ninput;
 	else
 		if (op == 2)
-			goto open;
+			goto nopen;
 		else {
 			system("cls");
 			cout << "ERROR. Quitting...";
 			goto welcome;
 		}
-	open:
+	nopen:
 	cout << "Which class would you like to open?" << endl;
 	cout << ">";
 	cin >> flnm;
@@ -59,7 +133,7 @@ int main() {
 	for (i = 0; i < N; i++)
 		getline(studentin, names[i]);
 	studentin.close();
-	goto init;
+	goto ginput;
 	ninput:
 	for (i = 0; i < N; i++) {
 		if ((i % 10) == 0)
@@ -87,47 +161,18 @@ int main() {
 		for (i = 0; i < N; i++)
 			studentout << names[i] << endl;
 		studentout.close();
-		cout << "The file was saved as '"<<file<<"'.";
+		cout << "The file was saved as '"<<file<<"'."<<endl;
 		cout << endl;
-		goto init;
+		goto ninput;
 	}
 	else
 		if (re == "no")
-			goto init;
+			goto ninput;
 		else {
 			system("cls");
 			cout << "ERROR. Quitting...";
 			goto ninput;
 		}
-	init:
-	cout << "Input the minimum grade: ";
-	cin >> mins;
-	cout << "Input the maximum grade: ";
-	cin >> maxs;
-	ming = maxs;
-	if (mins < 0) {
-		cout << "The minimum grade is a negative number";
-		if (maxs < 0) {
-			cout << " and the maximum grade is a negative number." << endl;
-			goto init;
-		}
-		else {
-			cout << "." << endl;
-			goto init;
-		}
-	}
-	if (maxs < 0) {
-		cout << "The maximum grade is a negative number." << endl;
-		goto init;
-	}
-	if (mins > maxs) {
-		cout << "The minimum grade is greater than the maximum grade." << endl;
-		goto init;
-	}
-	if (mins == maxs) {
-		cout << "The minimum grade is equal to the maximum grade." << endl;
-		goto init;
-	}
 	ginput:
 	for (i = 0; i < N; i++) {
 		if (names[i].back() == 's')
@@ -410,7 +455,7 @@ int main() {
 							cout << ">";
 							cin >> re;
 							if (re == "yes")
-								goto init;
+								goto iprompt;
 							else
 								if (re == "no")
 									goto menu;
