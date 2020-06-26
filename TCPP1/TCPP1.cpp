@@ -163,11 +163,11 @@ int main() {
 		studentout.close();
 		cout << "The file was saved as '"<<file<<"'."<<endl;
 		cout << endl;
-		goto ninput;
+		goto ginput;
 	}
 	else
 		if (re == "no")
-			goto ninput;
+			goto ginput;
 		else {
 			system("cls");
 			cout << "ERROR. Quitting...";
