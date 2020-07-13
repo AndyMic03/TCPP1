@@ -101,7 +101,7 @@ int main() {
 	}
 	else
 		if (re == "no")
-			goto iinput;
+			goto nprompt;
 		else {
 			system("cls");
 			cout << "ERROR. Quitting...";
@@ -303,6 +303,12 @@ int main() {
 		}
 		else
 			if (op == 4) {
+				if (mins != 0 || maxs != 100) {
+					cout << "\t\tWARNING! Graphing is incompatible with your configuration." << endl;
+					cout << "\t\t\tPress any key to return to the menu..."<<endl;
+					_getch();
+					goto menu;
+				}
 				for (i = 0; i < N; i++) {
 					if (grades[i] >= 0 && grades[i] < 10)
 						zer++;
