@@ -20,7 +20,7 @@ int main() {
 		t -= 10;
 		cout << "\n\n\n";
 		cout << "\t\t*****************************" << endl;
-		cout << "\t\t*  Welcome to TCPP1(Beta)!  *" << endl;
+		cout << "\t\t*  Welcome to TCPP1(v0.19)! *" << endl;
 		cout << "\t\t  " << bar << "  " << endl;
 		cout << "\t\t*****************************" << endl;
 		this_thread::sleep_for(chrono::milliseconds(t));
@@ -28,7 +28,7 @@ int main() {
 	}
 	cout << "\n\n\n";
 	cout << "\t\t*****************************" << endl;
-	cout << "\t\t*  Welcome to TCPP1(Beta)!  *" << endl;
+	cout << "\t\t*  Welcome to TCPP1(v0.19)! *" << endl;
 	cout << "\t\t* Press any key to continue *" << endl;
 	cout << "\t\t*****************************" << endl;
 	cout << endl;
@@ -204,8 +204,10 @@ int main() {
 			cout << "There is " << ecnt << " error. Would you like to re-enter the data? (yes/no)" << endl;
 		cout << ">";
 		cin >> re;
-		if (re == "yes")
+		if (re == "yes") {
+			ecnt = 0;
 			goto ginput;
+		}
 		else
 			if (re == "no")
 				goto menu;
@@ -308,6 +310,23 @@ int main() {
 					cout << "\t\t\tPress any key to return to the menu..."<<endl;
 					_getch();
 					goto menu;
+				}
+				if (ecnt != 0) {
+					cout << "\tCAUTION! Graphing may be inacurate due to errors during the input of data." << endl;
+					cout << "\t\t\tDo you want to proceed?(yes/no)" << endl;
+					cout << "\t\t\t>";
+					cin >> re;
+					if (re == "yes")
+						re = "no";
+					else
+						if (re == "no")
+							goto menu;
+						else {
+							system("cls");
+							cout << "ERROR. Quitting...";
+							goto menu;
+						}
+					re = "no";
 				}
 				for (i = 0; i < N; i++) {
 					if (grades[i] >= 0 && grades[i] < 10)
