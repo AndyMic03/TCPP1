@@ -5,22 +5,26 @@
 #include<thread>
 #include<chrono>
 #include <conio.h>
+#include<math.h>
 #define N 3
 using namespace std;
 int main() {
 	string names[N], suf, nsuf, maxn, minn, premin, premax, preavg, re, pass[N], file, bar, flnm;
-	int grades[N], mins, maxs, ming, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250);
-	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0);
-	float avg,perp, rat;
-	ifstream studentin, initin;
-	ofstream output, studentout, initout;
+	int grades[N], mins, maxs, ming, i, maxw(0), op, sum(0), maxg(0), ecnt(0), passg, sump(0), fin, fir, ini, t(250), start(0);
+	int zer(0), ten(0), twe(0), thi(0), fou(0), fif(0), six(0), sev(0), eig(0), nin(0), hun(0); //Chart Variables
+	double avg,perp, rat, per(0);
+	ifstream input;
+	ofstream output;
+	string username, password; //Lock Strings
+	char inpass[100], outpass[100];
+	int temp,att(3), lock(0); //Lock Variables
 	welcome:
 	for (i = 0; i < 25; i++) {
 		bar += "#";
 		t -= 10;
 		cout << "\n\n\n";
 		cout << "\t\t*****************************" << endl;
-		cout << "\t\t*  Welcome to TCPP1(v0.19)! *" << endl;
+		cout << "\t\t*  Welcome to TCPP1(v0.20)! *" << endl;
 		cout << "\t\t  " << bar << "  " << endl;
 		cout << "\t\t*****************************" << endl;
 		this_thread::sleep_for(chrono::milliseconds(t));
@@ -28,12 +32,134 @@ int main() {
 	}
 	cout << "\n\n\n";
 	cout << "\t\t*****************************" << endl;
-	cout << "\t\t*  Welcome to TCPP1(v0.19)! *" << endl;
+	cout << "\t\t*  Welcome to TCPP1(v0.20)! *" << endl;
 	cout << "\t\t* Press any key to continue *" << endl;
 	cout << "\t\t*****************************" << endl;
 	cout << endl;
 	_getch();
 	bar = "";
+	input.open("init.txt");
+	input >> mins;
+	input >> maxs;
+	input >> start;
+	input.close();
+	if (start == 0)
+		goto first;
+	else
+		goto pass;
+	pass:
+	system("cls");
+	input.open("lock.txt");
+	if (input.fail()) {
+		cout << "\t\t     SYSTEM FILES HAVE BEEN TAMPERED WITH" << endl;
+		cout << "\t\t       PLEASE CONTACT AN ADMINISTRATOR" << endl;\
+		cout << "\t\t           TERMINATING PROGRAM..." << endl;
+		this_thread::sleep_for(chrono::seconds(1));
+		return 104;
+	}
+	input >> temp;
+	input.close();
+	if (temp == 1) {
+		cout << "\t\t LOCKDOWN WAS IN PROGRESS" << endl;
+		cout << "\t\t     REDIRECTING NOW" << endl;
+		this_thread::sleep_for(chrono::seconds(2));
+		att = 0;
+	}
+	cout << "\n\n\n";
+	cout << "\t\t*****************************" << endl;
+	cout << "\t\t*          SECURITY         *" << endl;
+	cout << "\t\t*         CHECKPOINT        *" << endl;
+	cout << "\t\t*      " << att << " ATTEMPTS LEFT      *" << endl;
+	cout << "\t\t*****************************" << endl;
+	cout << "\n\n\n";
+	if (att == 0) {
+		system("cls");
+		output.open("lock.txt");
+		output << "1";
+		output.close();
+		for (i = 0; i < 29; i++) {
+			cout << "\n\n\n";
+			cout << "\t\t*****************************" << endl;
+			cout << "\t\t*       LOCKDOWN MODE       *" << endl;
+			cout << "\t\t*         ACTIVATED         *" << endl;
+			cout << "\t\t*     WAIT FOR 5 MINUTES    *" << endl;
+			cout << "\t\t*****************************" << endl;
+			cout << "\t\t\t    " << per << "%" << endl;
+			cout << "\t\t" << bar << endl;
+			this_thread::sleep_for(chrono::milliseconds(10340));
+			per += 3.45;
+			bar += "#";
+			system("cls");
+		}
+		lock++;
+		att += 3;
+		output.open("lock.txt");
+		output << "0";
+		output.close();
+		goto pass;
+	}
+	cout << "\t\t       Username: ";
+	cin >> username;
+	flnm = username;
+	file = flnm + ".txt";
+	input.open(file);
+	if (input.fail()) {
+		cout << "\t\t     Incorrect Username" << endl;
+		att--;
+		cout << "\t\t   Resetting in 10 seconds.";
+		this_thread::sleep_for(chrono::seconds(10));
+		input.close();
+		goto pass;
+	}
+	input >> inpass;
+	input.close();
+	cout << "\t\t       Password: ";
+	cin >> password;
+	for (i = 0; (i < 100 && inpass[i] != '\0'); i++)
+		inpass[i] = inpass[i] - 2;
+	if (inpass == password) {
+		cout << "\t\t******************************" << endl;
+		cout << "\t\t*       ACCESS GRANTED       *" << endl;
+		cout << "\t\t*          WELCOME           *" << endl;
+		cout << "\t\t*****************************" << endl;
+		goto iprompt;
+	}
+	else {
+		cout << "\t\t     Incorrect Password" << endl;
+		att--;
+		cout << "\t\t   Resetting in 10 seconds.";
+		this_thread::sleep_for(chrono::seconds(10));
+		goto pass;
+	}
+	first:
+	cout << endl;
+	cout << "*************************************************************" << endl;
+	cout << "*  Welcome to the 'Teacher Catalogue of Pupils' Program 1!  *" << endl;
+	cout << "*  This program will catalogue your student and test data.  *" << endl;
+	cout << "* You will now be prompted with a series of menus in order  *" << endl;
+	cout << "*to complete the initialisation and create your first class.*" << endl;
+	cout << "*                 PRESS ANY KEY TO CONTINUE                 *" << endl;
+	cout << "*************************************************************" << endl;
+	_getch();
+	cout << "\n\n\n";
+	cout << "*************************************************************" << endl;
+	cout << "*                        LOGIN INFO                         *" << endl;
+	cout << "*                      INITIALISATION                       *" << endl;
+	cout << "*************************************************************" << endl;
+	cout << "\t\t       Username: ";
+	cin >> username;
+	cout << "\t\t       Password: ";
+	cin >> outpass;
+	for (i = 0; (i < 100 && outpass[i] != '\0'); i++)
+		outpass[i] = outpass[i] + 2;
+	flnm = username;
+	file = flnm + ".txt";
+	output.open(file);
+	output << outpass;
+	output.close();
+	start = 1;
+	system("cls");
+	goto iprompt;
 	iprompt:
 	cout << "\t             Would you like to:" << endl;
 	cout << "\t       1.Input new initialization data" << endl;
@@ -52,13 +178,18 @@ int main() {
 			goto welcome;
 		}
 	iopen:
-	initin.open("init.txt");
-	initin >> mins;
-	initin >> maxs;
-	initin.close();
+	input.open("init.txt");
+	input >> mins;
+	input >> maxs;
+	input.close();
 	ming = maxs;
 	goto nprompt;
-	iinput:
+iinput:
+	cout << "\n\n";
+	cout << "\t\t********************" << endl;
+	cout << "\t\t*  INITIALISATION  *" << endl;
+	cout << "\t\t********************" << endl;
+	cout << endl;
 	cout << "Input the minimum grade: ";
 	cin >> mins;
 	cout << "Input the maximum grade: ";
@@ -91,10 +222,11 @@ int main() {
 	cout << ">";
 	cin >> re;
 	if (re == "yes") {
-		initout.open("init.txt");
-		initout << mins << endl;
-		initout << maxs << endl;
-		studentout.close();
+		output.open("init.txt");
+		output << mins << endl;
+		output << maxs << endl;
+		output << start << endl;
+		output.close();
 		cout << "The file was saved as 'init.txt'."<<endl;
 		cout << endl;
 		goto nprompt;
@@ -129,10 +261,10 @@ int main() {
 	cout << ">";
 	cin >> flnm;
 	file = flnm + ".txt";
-	studentin.open(file);
+	input.open(file);
 	for (i = 0; i < N; i++)
-		getline(studentin, names[i]);
-	studentin.close();
+		getline(input, names[i]);
+	input.close();
 	goto ginput;
 	ninput:
 	for (i = 0; i < N; i++) {
@@ -157,10 +289,10 @@ int main() {
 		cout << ">";
 		cin >> flnm;
 		file = flnm + ".txt";
-		studentout.open(file);
+		output.open(file);
 		for (i = 0; i < N; i++)
-			studentout << names[i] << endl;
-		studentout.close();
+			output << names[i] << endl;
+		output.close();
 		cout << "The file was saved as '"<<file<<"'."<<endl;
 		cout << endl;
 		goto ginput;
@@ -234,7 +366,7 @@ int main() {
 	cout << "6.Re-Input the test results" << endl;
 	cout << "7.Re-Initialize the min/max grades" << endl;
 	cout << "8.Marking Scheme Converter" << endl;
-	cout << "9.Exit the console" << endl;
+	cout << "9.Sign Out" << endl;
 	cout << ">";
 	cin >> op;
 	system("cls");
@@ -528,7 +660,8 @@ int main() {
 									cout << "\t\t*  Goodbye  *" << endl;
 									cout << "\t\t*************" << endl;
 									this_thread::sleep_for(chrono::milliseconds(1000));
-									return 0;
+									system("cls");
+									goto welcome;
 								}
 								else {
 									cout << endl;
