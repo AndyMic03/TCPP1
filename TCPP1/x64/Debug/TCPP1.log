@@ -1,5 +1,5 @@
 ﻿  TCPP1.cpp
-C:\Users\ateas\Desktop\School\cpp\TCPP1\TCPP1\TCPP1.cpp(223,26): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  The contents of <filesystem> are available only with C++17 or later.
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/PROFILE' specification
 TCPP1.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:REF' specification
-  TCPP1.vcxproj -> C:\Users\ateas\Desktop\School\cpp\TCPP1\x64\Debug\TCPP1.exe
+  TCPP1.vcxproj -> C:\Users\ateas\Desktop\cpp\TCPP1\x64\Debug\TCPP1.exe
