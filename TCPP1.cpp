@@ -10,12 +10,12 @@
 #include<direct.h>
 constexpr auto N = 3;
 using namespace std;
-void welcome(int& start) {
-	int i, t(250), mins, maxs;
+void welcome() {
+	int i, t(250);
 	string bar,version;
 	ifstream input;
 	ofstream output;
-	version = "v0.22";
+	version = "v0.23";
 	for (i = 0; i < 25; i++) {
 		bar += "#";
 		t -= 10;
@@ -35,14 +35,9 @@ void welcome(int& start) {
 	cout << endl;
 	_getch();
 	bar = "";
-	input.open("init.txt");
-	input >> mins;
-	input >> maxs;
-	input >> start;
-	input.close();
 }
-void security(int& att, string cusername) {
-	string username, password, bar, flnm, file, cdir, ndir;
+void security(int& att, string cusername, bool& su, bool& admin) {
+	string username, password, bar, flnm, file, cdir, ndir, adtst;
 	char inpass[100];
 	int temp, lock(0), i, loop(1), maxlen(8);
 	double per(0);
@@ -50,6 +45,7 @@ void security(int& att, string cusername) {
 	ifstream input;
 	ofstream output;
 	system("cls");
+	su = false;
 	input.open("lock.txt");
 	if (input.fail()) {
 		cout << "\t\t     SYSTEM FILES HAVE BEEN TAMPERED WITH" << endl;
@@ -98,7 +94,7 @@ void security(int& att, string cusername) {
 		output.open("lock.txt");
 		output << "0";
 		output.close();
-		security(att, cusername);
+		security(att, cusername, su, admin);
 	}
 	if (lock > 3) {
 		cout << "\n\n\n";
@@ -115,19 +111,33 @@ void security(int& att, string cusername) {
 	flnm = username;
 	file = flnm + ".txt";
 	input.open(file);
+	if (username == "admin") {
+		cout << "\t\t       Password: ";
+		cin >> password;
+		if (password == "pass") {
+			cout << "\t\t*************************************************************" << endl;
+			cout << "\t\t*                  SUPER-USER MODE ENABLED                  *" << endl;
+			cout << "\t\t*************************************************************" << endl;
+			su = true;
+		}
+		return;
+	}
 	if (input.fail()) {
 		cout << "\t\t     Incorrect Username" << endl;
 		att--;
 		cout << "\t\t   Resetting in 10 seconds.";
 		this_thread::sleep_for(chrono::seconds(10));
 		input.close();
-		security(att, cusername);
+		security(att, cusername, su, admin);
 		return;
 	}
 	input >> inpass;
+	input >> adtst;
 	input.close();
 	cout << "\t\t       Password: ";
 	cin >> password;
+	if (adtst == "susr")
+		admin = true;
 	for (i = 0; (i < 100 && inpass[i] != '\0'); i++)
 		inpass[i] = inpass[i] - 2;
 	if (inpass == password) {
@@ -149,12 +159,12 @@ void security(int& att, string cusername) {
 		att--;
 		cout << "\t\t   Resetting in 10 seconds.";
 		this_thread::sleep_for(chrono::seconds(10));
-		security(att, cusername);
+		security(att, cusername, su, admin);
 	}
 }
 void user_input(int& start, int& ch, string mdir) {
 	int i, maxlen(8);
-	string username, password, flnm, file, pval, cdir, dg, ndir, rdir;
+	string username, password, flnm, file, pval, cdir, dg, ndir, rdir, admin;
 	ofstream output;
 	char outpass[100];
 	char* buffer = {};
@@ -170,12 +180,18 @@ void user_input(int& start, int& ch, string mdir) {
 	cin >> username;
 	cout << "\t\t       Password: ";
 	cin >> outpass;
+	cout << "\t\t Is this user an administrator? (yes/no) >";
+	cin >> admin;
 	for (i = 0; (i < 100 && outpass[i] != '\0'); i++)
 		outpass[i] = outpass[i] + 2;
 	flnm = username;
 	file = flnm + ".txt";
 	output.open(file);
-	output << outpass;
+	output << outpass << endl;
+	if (admin == "yes")
+		output << "susr";
+	if (admin == "no")
+		output << "usr";
 	output.close();
 	cdir = _getcwd(buffer, maxlen);
 	ndir = cdir + "\\" + username;
@@ -230,13 +246,6 @@ void first(int& start, int& ch, string mdir) {
 	_getch();
 	user_input(start, ch, mdir);
 }
-void init_open(int& mins, int& maxs) {
-	ifstream input;
-	input.open("init.txt");
-	input >> mins;
-	input >> maxs;
-	input.close();
-}
 void init_input(int& start) {
 	int mins, maxs, ming;
 	string re;
@@ -281,7 +290,6 @@ void init_input(int& start) {
 		output.open("init.txt");
 		output << mins << endl;
 		output << maxs << endl;
-		output << start << endl;
 		output.close();
 		cout << "The file was saved as 'init.txt'." << endl;
 		cout << endl;
@@ -295,27 +303,6 @@ void init_input(int& start) {
 			cout << "ERROR. Quitting...";
 			init_input(start);
 		}
-}
-void init_prompt(int& start, int& mins, int& maxs, int& ming) {
-	int op;
-	cout << "\t             Would you like to:" << endl;
-	cout << "\t       1.Input new initialization data" << endl;
-	cout << "\t     2.Open existing initialization data" << endl;
-	cout << "\t     >";
-	cin >> op;
-	cout << endl;
-	if (op == 1)
-		init_input(start);
-	else
-		if (op == 2)
-			init_open(mins, maxs);
-		else {
-			system("cls");
-			cout << "ERROR. Quitting...";
-			init_prompt(start, mins, maxs, ming);
-		}
-	ming = maxs;
-	return;
 }
 void name_open(string names[N]) {
 	string flnm, file;
@@ -372,25 +359,6 @@ void name_input(string names[N]) {
 			system("cls");
 			cout << "ERROR. Quitting...";
 			name_input(names);
-		}
-}
-void name_prompt(string names[N]) {
-	int op;
-	cout << "\t\t     Would you like to:" << endl;
-	cout << "\t\t  1.Input new student data" << endl;
-	cout << "\t\t2.Open existing student data" << endl;
-	cout << "\t\t>";
-	cin >> op;
-	cout << endl;
-	if (op == 1)
-		name_input(names);
-	else
-		if (op == 2)
-			name_open(names);
-		else {
-			system("cls");
-			cout << "ERROR. Quitting...";
-			name_prompt(names);
 		}
 }
 void name_edit(size_t& maxw) {
@@ -477,25 +445,6 @@ void grade_input(int& mins, int& maxs, size_t& maxw, string names[N], int grades
 			maxw = names[i].size();
 	}
 	cout << "DATA INPUT COMPLETED!" << endl;
-}
-void grade_prompt(string names[N], int grades[N], int& mins, int& maxs, size_t& maxw, int& ecnt) {
-	int op;
-	cout << "\t\t     Would you like to:" << endl;
-	cout << "\t\t  1.Input the new grades" << endl;
-	cout << "\t\t2.Open existing grade data" << endl;
-	cout << "\t\t>";
-	cin >> op;
-	cout << endl;
-	if (op == 1)
-		grade_input(mins, maxs, maxw, names, grades);
-	else
-		if (op == 2)
-			return; //placeholder
-		else {
-			system("cls");
-			cout << "ERROR. Quitting...";
-			grade_prompt(names, grades, mins, maxs, maxw, ecnt);
-		}
 }
 void grade_view(string names[N], int grades[N], int& maxw) {
 	int i;
@@ -681,7 +630,7 @@ void test_view(size_t& maxw) {
 	cout << endl;
 }
 void test_edit(size_t& maxw) {
-	int i, transfer[N];
+	int i, transfer[N]{};
 	string flnm, file, word, names[N], grades[N];
 	ifstream input;
 	cout << "Which test would you like to edit?" << endl;
@@ -711,6 +660,221 @@ void test_delete() {
 	cin >> flnm;
 	file = flnm + ".txt";
 	remove(file.c_str());
+}
+void records_input(string mdir) {
+	int i, maxlen(8);
+	string rdir, ndir, file, tmp;
+	char* buffer = {};
+	ifstream input;
+	ofstream output;
+	struct {
+		string id;
+		string name;
+		string dob;
+		string add;
+		string fmob;
+		string mmob;
+		string hmob;
+		string past;
+		string com;
+	}student[N];
+	rdir = _getcwd(buffer, maxlen);
+	_chdir(mdir.c_str());
+	ndir = mdir + "//records";
+	_chdir(ndir.c_str());
+	for (i = 0; i < N; i++) {
+		cout << "Input the ID number of the student: ";
+		cin >> student[i].id;
+		cout << "Input the full name of the student: ";
+		getline(cin, tmp);
+		getline(cin, student[i].name);
+		cout << "Input the date of birth of the student: ";
+		cin >> student[i].dob;
+		cout << "Input the father's phone number number of the student: ";
+		cin >> student[i].fmob;
+		cout << "Input the mother's phone number number of the student: ";
+		cin >> student[i].mmob;
+		cout << "Input the home's phone number number of the student: ";
+		cin >> student[i].hmob;
+		cout << "Input any past offences of the student: ";
+		getline(cin, tmp);
+		getline(cin, student[i].past);
+		cout << "Input any comments for the student: ";
+		getline(cin, student[i].com);
+		file = student[i].id + ".txt";
+		output.open(file);
+		output << student[i].id << endl;
+		output << student[i].name << endl;
+		output << student[i].dob << endl;
+		output << student[i].fmob << endl;
+		output << student[i].mmob << endl;
+		output << student[i].hmob << endl;
+		output << student[i].past << endl;
+		output << student[i].com << endl;
+		output.close();
+		output.open("rc.txt", ios_base::app);
+		output << student[i].id << endl;
+		output.close();
+	}
+	_chdir(rdir.c_str());
+	return;
+}
+void records_view(string mdir) {
+	int i, maxlen(8), found(0);
+	string rdir, ndir, file, re, tmp, look;
+	char* buffer = {};
+	ifstream input;
+	ofstream output;
+	struct {
+		string id;
+		string name;
+		string dob;
+		string add;
+		string fmob;
+		string mmob;
+		string hmob;
+		string past;
+		string com;
+	}student[N];
+	rdir = _getcwd(buffer, maxlen);
+	_chdir(mdir.c_str());
+	ndir = mdir + "//records";
+	_chdir(ndir.c_str());
+	cout << "Input the ID of the student you are looking for:";
+	cin >> look;
+	input.open("rc.txt");
+	for (i = 0; i < N; i++) {
+		input >> tmp;
+		if (tmp == look)
+			found++;
+	}
+	if (found == 1)
+		cout << found << " Resut found." << endl;
+	else {
+		cout << "No results found." << endl;
+		return;
+	}
+	input.close();
+	for (i = 0; i < found; i++) {
+		file = look + ".txt";
+		input.open(file);
+		input >> student[i].id;
+		getline(input, tmp);
+		getline(input, student[i].name);
+		input >> student[i].dob;
+		input >> student[i].fmob;
+		input >> student[i].mmob;
+		input >> student[i].hmob;
+		getline(input, tmp);
+		getline(input, student[i].past);
+		getline(input, student[i].com);
+		input.close();
+		cout << "ID:            " << student[i].id << endl;
+		cout << "Full Name:     " << student[i].name << endl;
+		cout << "DOB:           " << student[i].dob << endl;
+		cout << "Father Number: " << student[i].fmob << endl;
+		cout << "Mother Number: " << student[i].mmob << endl;
+		cout << "Home Number:   " << student[i].hmob << endl;
+		cout << "Past Offences: " << student[i].past << endl;
+		cout << "Comments:      " << student[i].com << endl;
+		input.close();
+		cout << endl;
+		cout << "Would you like to run another search? (yes/no)" << endl;
+		cout << ">";
+		cin >> re;
+		if (re == "yes")
+			records_view(mdir);
+	}
+	_chdir(rdir.c_str());
+	return;
+}
+void records_edit(string mdir) {
+	int i, maxlen(8), found(0);
+	string rdir, ndir, file, re, tmp, look;
+	char* buffer = {};
+	ifstream input;
+	ofstream output;
+	struct {
+		string id;
+		string name;
+		string dob;
+		string add;
+		string fmob;
+		string mmob;
+		string hmob;
+		string past;
+		string com;
+	}student[N];
+	rdir = _getcwd(buffer, maxlen);
+	_chdir(mdir.c_str());
+	ndir = mdir + "//records";
+	_chdir(ndir.c_str());
+	cout << "Input the ID of the student you are looking to edit:";
+	cin >> look;
+	input.open("rc.txt");
+	for (i = 0; i < N; i++) {
+		input >> tmp;
+		if (tmp == look)
+			found++;
+	}
+	if (found == 1)
+		cout << found << " Resut found." << endl;
+	else {
+		cout << "No results found." << endl;
+		return;
+	}
+	input.close();
+	for (i = 0; i < found; i++) {
+		file = look + ".txt";
+		input.open(file);
+		input >> student[i].id;
+		getline(input, tmp);
+		getline(input, student[i].name);
+		input >> student[i].dob;
+		input >> student[i].fmob;
+		input >> student[i].mmob;
+		input >> student[i].hmob;
+		getline(input, tmp);
+		getline(input, student[i].past);
+		getline(input, student[i].com);
+		input.close();
+		cout << "ID:            " << setw(20) << student[i].id << endl;
+		cout << "Full Name:     " << setw(20) << student[i].name << "\t| Change: ";
+		getline(cin, tmp);
+		getline(cin, student[i].name);
+		cout << "DOB:           " << setw(20) << student[i].dob << "\t| Change: ";
+		cin >> student[i].dob;
+		cout << "Father Number: " << setw(20) << student[i].fmob << "\t| Change: ";
+		cin >> student[i].fmob;
+		cout << "Mother Number: " << setw(20) << student[i].mmob << "\t| Change: ";
+		cin >> student[i].mmob;
+		cout << "Home Number:   " << setw(20) << student[i].hmob << "\t| Change: ";
+		cin >> student[i].hmob;
+		cout << "Past Offences: " << setw(20) << student[i].past << "\t| Change: ";
+		getline(cin, tmp);
+		getline(cin, student[i].past);
+		cout << "Comments:      " << setw(20) << student[i].com << "\t| Change: ";
+		getline(cin, student[i].com);
+		output.open(file);
+		output << student[i].id << endl;
+		output << student[i].name << endl;
+		output << student[i].dob << endl;
+		output << student[i].fmob << endl;
+		output << student[i].mmob << endl;
+		output << student[i].hmob << endl;
+		output << student[i].past << endl;
+		output << student[i].com << endl;
+		output.close();
+	}
+		cout << endl;
+		cout << "Would you like to run another search? (yes/no)" << endl;
+		cout << ">";
+		cin >> re;
+		if (re == "yes")
+			records_view(mdir);
+	
+	_chdir(rdir.c_str());
+	return;
 }
 void logout(int& rep, int& log, string mdir) {
 	int i, t(250);
@@ -860,7 +1024,7 @@ void submenu3(string mdir, int& start, string cusername, int& ch) {
 		break;
 	}
 }
-void submenu4(int& start, int& mins, int& maxs, int& ming) {
+void submenu4(int& start, int& mins, int& maxs, int& ming, string mdir) {
 	int op;
 	system("cls");
 	cout << "\t\t*************************************************************" << endl;
@@ -875,32 +1039,71 @@ void submenu4(int& start, int& mins, int& maxs, int& ming) {
 	cout << "\n\n\n";
 	switch (op) {
 	case 1:
-		init_prompt(start, mins, maxs, ming);
+		init_input(start);
 		break;
 	case 2:
 		grade_conv();
 		break;
 	case 3:
-		return; // placeholder
+		records_view(mdir);
 		break;
 	case 4:
 		return;
 		break;
 	default:
-		submenu4(start, mins, maxs, ming);
+		submenu4(start, mins, maxs, ming, mdir);
+		break;
+	}
+}
+void submenu5(string mdir){
+	int op;
+	system("cls");
+	cout << "\t\t*************************************************************" << endl;
+	cout << "\t\t*                       SUBMENU RECORDS                     *" << endl;
+	cout << "\t\t*                      1.CREATE RECORDS                     *" << endl;
+	cout << "\t\t*                       2.EDIT RECORDS                      *" << endl;
+	cout << "\t\t*                       3.VIEW RECORDS                      *" << endl;
+	cout << "\t\t*                      4.DELETE RECORDS                     *" << endl;
+	cout << "\t\t*                           5.BACK                          *" << endl;
+	cout << "\t\t*************************************************************" << endl;
+	cout << "\t\t                            >";
+	cin >> op;
+	cout << "\n\n\n";
+	switch (op) {
+	case 1:
+		records_input(mdir);
+		break;
+	case 2:
+		records_edit(mdir);
+		break;
+	case 3:
+		records_view(mdir);
+		break;
+	case 4:
+		//records_delete(mdir);
+		break;
+	case 5:
+		return;
+		break;
+	default:
+		submenu5(mdir);
 		break;
 	}
 }
 void mainmenu(string names[N], string mdir, int& rep, int& log, int& start, string cusername, int& ch, int& mins, int& maxs, int& ming, size_t& maxw) {
 	int op;
+	ifstream input;
+	input.open("init.txt");
+	input >> mins;
+	input >> maxs;
+	input.close();
 	cout << "\t\t*************************************************************" << endl;
 	cout << "\t\t*                         MAIN MENU                         *" << endl;
 	cout << "\t\t*                          1.TESTS                          *" << endl;
 	cout << "\t\t*                         2.STUDENTS                        *" << endl;
-	cout << "\t\t*                  3.SECURITY/ADMINISTRATION                *" << endl;
-	cout << "\t\t*                        4.UTILITIES                        *" << endl;
-	cout << "\t\t*                         5.LOG-OUT                         *" << endl;
-	cout << "\t\t*                     6.EXIT THE CONSOLE                    *" << endl;
+	cout << "\t\t*                        3.UTILITIES                        *" << endl;
+	cout << "\t\t*                         4.LOG-OUT                         *" << endl;
+	cout << "\t\t*                     5.EXIT THE CONSOLE                    *" << endl;
 	cout << "\t\t*************************************************************" << endl;
 	cout << "\t\t                            >";
 	cin>>op;
@@ -913,15 +1116,12 @@ void mainmenu(string names[N], string mdir, int& rep, int& log, int& start, stri
 			submenu2(names, maxw);
 			break;
 		case 3:
-			submenu3(mdir, start, cusername, ch);
+			submenu4(start, mins, maxs, ming, mdir);
 			break;
 		case 4:
-			submenu4(start, mins, maxs, ming);
-			break;
-		case 5:
 			logout(rep, log, mdir);
 			break;
-		case 6:
+		case 5:
 			goodbye(rep, log);
 			break;
 		default:
@@ -930,19 +1130,97 @@ void mainmenu(string names[N], string mdir, int& rep, int& log, int& start, stri
 	}
 	return;
 }
+void mainmenu_s(string names[N], string mdir, int& rep, int& log, int& start, string cusername, int& ch, int& mins, int& maxs, int& ming) {
+	int op;
+	cout << "\t\t*************************************************************" << endl;
+	cout << "\t\t*                         MAIN MENU                         *" << endl;
+	cout << "\t\t*                  1.SECURITY/ADMINISTRATION                *" << endl;
+	cout << "\t\t*                         2.RECORDS                         *" << endl;
+	cout << "\t\t*                        3.UTILITIES                        *" << endl;
+	cout << "\t\t*                         4.LOG-OUT                         *" << endl;
+	cout << "\t\t*                     5.EXIT THE CONSOLE                    *" << endl;
+	cout << "\t\t*************************************************************" << endl;
+	cout << "\t\t                            >";
+	cin >> op;
+	cout << "\n\n\n";
+	switch (op) {
+	case 1:
+		submenu3(mdir, start, cusername, ch);
+		break;
+	case 2:
+		submenu5(mdir);
+		break;
+	case 3:
+		submenu4(start, mins, maxs, ming, mdir);
+		break;
+	case 4:
+		logout(rep, log, mdir);
+		break;
+	case 5:
+		goodbye(rep, log);
+		break;
+	default:
+		mainmenu_s(names, mdir, rep, log, start, cusername, ch, mins, maxs, ming);
+		break;
+	}
+	return;
+}
+void mainmenu_su(string names[N], string mdir, int& rep, int& log, int& start, string cusername, int& ch, int& mins, int& maxs, int& ming, size_t& maxw) {
+	int op;
+	ifstream input;
+	input.open("init.txt");
+	input >> mins;
+	input >> maxs;
+	input.close();
+	cout << "\t\t*************************************************************" << endl;
+	cout << "\t\t*                         MAIN MENU                         *" << endl;
+	cout << "\t\t*                          1.TESTS                          *" << endl;
+	cout << "\t\t*                         2.STUDENTS                        *" << endl;
+	cout << "\t\t*                  3.SECURITY/ADMINISTRATION                *" << endl;
+	cout << "\t\t*                        4.UTILITIES                        *" << endl;
+	cout << "\t\t*                         5.LOG-OUT                         *" << endl;
+	cout << "\t\t*                     6.EXIT THE CONSOLE                    *" << endl;
+	cout << "\t\t*************************************************************" << endl;
+	cout << "\t\t                            >";
+	cin >> op;
+	cout << "\n\n\n";
+	switch (op) {
+	case 1:
+		submenu1(names, maxw, mins, maxs);
+		break;
+	case 2:
+		submenu2(names, maxw);
+		break;
+	case 3:
+		submenu3(mdir, start, cusername, ch);
+		break;
+	case 4:
+		submenu4(start, mins, maxs, ming, mdir);
+		break;
+	case 5:
+		logout(rep, log, mdir);
+		break;
+	case 6:
+		goodbye(rep, log);
+		break;
+	default:
+		mainmenu_su(names, mdir, rep, log, start, cusername, ch, mins, maxs, ming, maxw);
+		break;
+	}
+	return;
+}
 int main() {
 	begin:
 	string names[N], mdir, cusername;
 	char* buffer = {};
 	int mins(0), maxs(0), ming(0), ecnt(0), start, rep(1), log(0), att(3), maxlen(8), ch(0);
+	bool su(false), admin(false);
 	size_t maxw(0);
 	ifstream input;
 	ofstream output;
 	mdir = _getcwd(buffer, maxlen);
-	welcome(start);
-	input.open("init.txt");
-	input >> mins;
-	input >> maxs;
+	welcome();
+	input.open("global_parameters.txt");
 	input >> start;
 	input.close();
 	if (start == 0) {
@@ -951,10 +1229,19 @@ int main() {
 		ch = 0;
 	}
 	else
-		security(att, cusername);
+		security(att, cusername, su, admin);
 	start = 1;
-	while(rep==1)
-		mainmenu(names, mdir, rep, log, start, cusername, ch, mins, maxs, ming, maxw);
+	if ((su == false) and (admin == false))
+		while (rep == 1)
+			mainmenu(names, mdir, rep, log, start, cusername, ch, mins, maxs, ming, maxw);
+	else
+		if (admin == true)
+			while (rep == 1)
+				mainmenu_su(names, mdir, rep, log, start, cusername, ch, mins, maxs, ming, maxw);
+		else
+			if (su == true)
+				while (rep == 1)
+					mainmenu_s(names, mdir, rep, log, start, cusername, ch, mins, maxs, ming);
 	if (log == 1)
 		goto begin;
 	else
